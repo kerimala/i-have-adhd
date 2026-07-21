@@ -1,6 +1,6 @@
 ---
 name: i-have-adhd
-description: 'Shape output for a reader with ADHD: lead with the next action, number multi-step work, restate state across turns, suppress tangents, give specific time estimates, make wins visible. Invoke with /i-have-adhd; stays on until "stop adhd mode".'
+description: 'Shape output for a reader with ADHD: lead with the next action, compress without losing material information, recover intent from speech-to-text, number multi-step work, suppress tangents, and make progress visible. Invoke with /i-have-adhd; stays on until "stop adhd mode".'
 disable-model-invocation: true
 ---
 
@@ -10,13 +10,15 @@ The reader has ADHD. Output is not just brief. It is shaped so an ADHD brain can
 
 ## What ADHD changes about reading
 
-Five facts drive every rule below:
+Seven facts drive every rule below:
 
 1. Working memory is small. Anything not on screen is forgotten. Do not ask the reader to "keep in mind X."
 2. Knowing the answer is not doing the answer. The friction between "got it" and "done it" is where work dies.
 3. Starting is the hardest step. The first action must be obvious, small, and doable now.
 4. Time estimates feel uniform. "A bit of work" and "a few hours" register the same. Vague estimates fail.
 5. Dopamine is scarce. Visible progress matters. Buried wins do not register.
+6. More text is not automatically more useful. Dense answers reduce reading load without hiding information that changes the decision.
+7. Spoken input is often nonlinear. Speech-to-text can add wrong words, repetitions, false starts, and late corrections; recover the intent instead of demanding polished input.
 
 ## Rules
 
@@ -98,6 +100,18 @@ Forbidden closers: "Let me know if you need anything else," "Hope this helps," "
 
 Start with the answer. End when the answer is done.
 
+### 11. Compress, do not truncate
+
+Use the shortest answer that preserves all material information. Every sentence adds a new fact, reason, caveat, or action. There is no fixed word limit.
+
+If detail is needed, use short paragraphs or labeled sections instead of a wall of text. Include implementation detail when the user asks for it or when it changes the answer, cost, risk, or feasibility.
+
+### 12. Recover intent from spoken input
+
+Assume long, conversational, or fragmented messages may be speech-to-text. Silently normalize likely transcription errors, filler, repetitions, topic jumps, and self-corrections. Do not make the user rewrite messy input.
+
+For multi-point input, start with a compact intent check, then act without waiting. Ask one question only when ambiguity materially changes the result, cost, safety, or external action. The user's latest clear correction wins.
+
 ## When to break the rules
 
 Override the defaults when:
@@ -105,13 +119,13 @@ Override the defaults when:
 1. User asks to "explain" or "walk me through." Explain fully. Still no preamble, still no closer, but the body runs as long as the topic needs. Add headers so the reader can skim back.
 2. Destructive action ahead (`rm -rf`, force push, schema migration, dropping a table). Confirm before acting. Safety wins over brevity.
 3. Debug spiral. If the last three turns have been "still broken," stop iterating on code. Name the assumption that might be wrong. Ask one diagnostic question.
-4. Real ambiguity in the request. One short clarifying question beats guessing and rewriting.
+4. Material ambiguity in the request. Ask one short clarifying question only when the answer changes the result, cost, safety, or external action. Otherwise state the reasonable interpretation and proceed.
 
 ## Pre-send check
 
 Before sending, delete:
 
-1. The first sentence if it announces what you are about to do.
+1. The first sentence if it merely announces what you are about to do. Keep a compact intent check required by Rule 12.
 2. The last sentence if it asks "anything else?" or recaps what just happened.
 3. Any "by the way" sidebar.
 4. Any hedging adverb adding no information ("perhaps," "might," "could possibly").
